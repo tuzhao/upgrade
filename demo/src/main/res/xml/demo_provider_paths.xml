@@ -4,30 +4,15 @@
         name="dcim"
         path="DCIM/" />
     <external-path
-        name="beta_external_path"
-        path="download/" />
-    <external-path
-        name="beta_external_path"
-        path="Pictures/" />
-    <external-path
-        name="files_root"
-        path="Android/data/com/pgyersdk" />
-    <external-path
-        name="external_storage_root"
-        path="." />
-    <external-path
-        name="my_images"
-        path="Android/data/com.megvii.lite/files/Pictures/" />
-    <external-path
         name="images"
         path="Pictures/" />
     <external-path
-        name="dcim"
-        path="DCIM/" />
-    <external-cache-path
-        name="download_app_one"
-        path="." />
-    <cache-path
-        name="download_app_two"
+        name="beta_external_path"
+        path="Download/" />
+    <external-path
+        name="beta_external_path"
+        path="Pictures/" />
+    <external-path
+        name="external_storage_root"
         path="." />
 </paths>
