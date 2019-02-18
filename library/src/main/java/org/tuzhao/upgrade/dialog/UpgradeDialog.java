@@ -50,6 +50,7 @@ public final class UpgradeDialog extends AppCompatDialog {
     private UpgradeInfoBean bean;
     private boolean isForce;
     private static WeakReference<UpgradeDialog> wr;
+    private static WeakReference<DownloadThread> th;
     private int count;
     private Activity activity;
     private String fileProvider;
@@ -95,10 +96,22 @@ public final class UpgradeDialog extends AppCompatDialog {
                 wr.clear();
                 wr = null;
             }
+            clearThread();
         } catch (Exception e) {
             if (BuildInfo.DEBUG_MODE) {
                 Log.w(TAG, "close upgrade dialog cause error", e);
             }
+        }
+    }
+
+    private static void clearThread() {
+        if (null != th) {
+            DownloadThread thread = th.get();
+            if (null != thread) {
+                thread.close();
+            }
+            th.clear();
+            th = null;
         }
     }
 
@@ -219,6 +232,7 @@ public final class UpgradeDialog extends AppCompatDialog {
             saveName = "upgrade_" + bean.getUpgradeVersionName() + "_" + (System.currentTimeMillis() / 1000) + ".apk";
             String url = bean.getUpgradeDownloadUrl();
             DownloadThread thread = new DownloadThread(handler, url, saveDir, saveName, bean.getUpgradeFileSize());
+            th = new WeakReference<>(thread);
             thread.start();
         }
     }
@@ -386,6 +400,7 @@ public final class UpgradeDialog extends AppCompatDialog {
                 install.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
                 getContext().startActivity(install);
             }
+            clearThread();
         } else {
             log("where is your download apk file?");
         }
@@ -406,6 +421,7 @@ public final class UpgradeDialog extends AppCompatDialog {
         private String saveDir;
         private String saveName;
         private long size;
+        private volatile boolean isGiveUp;
 
         /**
          * @param size 这里是apk总的字节大小，要特别注意！
@@ -416,6 +432,10 @@ public final class UpgradeDialog extends AppCompatDialog {
             this.saveDir = saveDir;
             this.saveName = saveName;
             this.size = size;
+        }
+
+        private void close() {
+            isGiveUp = true;
         }
 
         private static void log(String msg) {
@@ -500,22 +520,6 @@ public final class UpgradeDialog extends AppCompatDialog {
                     }
 
                     if (numRead <= 0) {
-                        try {
-                            fos.flush();
-                        } catch (Exception e) {
-                            //...ignore...
-                        }
-                        try {
-                            fos.close();
-                            is.close();
-                        } catch (Exception e) {
-                            //...ignore
-                        }
-                        try {
-                            is.close();
-                        } catch (Exception e) {
-                            //...ignore
-                        }
                         if (fileTemp.renameTo(f1)) {
                             log("rename file success");
                             try {
@@ -539,7 +543,23 @@ public final class UpgradeDialog extends AppCompatDialog {
                         break;
                     }
                     fos.write(buf, 0, numRead);
-                } while (true);
+                } while (!isGiveUp);
+
+                try {
+                    fos.flush();
+                } catch (Exception e) {
+                    //...ignore...
+                }
+                try {
+                    fos.close();
+                } catch (Exception e) {
+                    //...ignore
+                }
+                try {
+                    is.close();
+                } catch (Exception e) {
+                    //...ignore
+                }
             } catch (Exception e) {
                 if (BuildInfo.DEBUG_MODE) {
                     Log.w(TAG, "download thread run error.", e);
