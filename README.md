@@ -26,17 +26,17 @@ here is demo_provider_paths.xml content.
         name="dcim"
         path="DCIM/" />
     <external-path
+        name="images"
+        path="Pictures/" />
+    <external-path
         name="beta_external_path"
-        path="download/" />
+        path="Download/" />
     <external-path
         name="beta_external_path"
         path="Pictures/" />
     <external-path
         name="external_storage_root"
         path="." />
-    <external-path
-        name="images"
-        path="Pictures/" />
 </paths>
 ```
 
