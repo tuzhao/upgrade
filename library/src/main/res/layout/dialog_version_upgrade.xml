@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginLeft="40dp"
+    android:layout_marginRight="40dp"
+    android:background="@drawable/bg_upgrade_dialog"
+    android:minWidth="310dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/dialog_update_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:paddingTop="18dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="18dp"
+        android:tag="beta_title"
+        android:text="@string/upgrade_title"
+        android:textColor="#333333"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#E7EBEE"
+        tools:ignore="ContentDescription" />
+
+    <org.tuzhao.upgrade.view.MaxScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:scrollbars="none">
+
+        <TextView
+            android:id="@+id/dialog_update_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="3dp"
+            android:minHeight="120dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="20dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="20dp"
+            android:text=""
+            android:textColor="#666666"
+            android:textSize="14dp"
+            tools:ignore="SpUsage" />
+    </org.tuzhao.upgrade.view.MaxScrollView>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#E7EBEE"
+        tools:ignore="ContentDescription" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:showDividers="middle">
+
+        <TextView
+            android:id="@+id/dialog_update_bt_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/public_selector_click_bg"
+            android:gravity="center"
+            android:tag="beta_cancel_button"
+            android:text="@string/upgrade_cancel"
+            android:textColor="#666666"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="#E7EBEE"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/dialog_update_bt_submit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/public_selector_click_bg"
+            android:gravity="center"
+            android:tag="beta_confirm_button"
+            android:text="@string/upgrade_submit"
+            android:textColor="#1b88ee"
+            android:textSize="16sp" />
+    </LinearLayout>
+</LinearLayout>
