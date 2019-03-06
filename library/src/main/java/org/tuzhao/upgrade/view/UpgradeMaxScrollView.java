@@ -5,24 +5,24 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ScrollView;
 
-import org.tuzhao.upgrade.BuildInfo;
+import org.tuzhao.upgrade.UpgradeBuildInfo;
 
 /**
  * 解决maxHeight不生效的问题
  *
  * @author tuzhao
  */
-public class MaxScrollView extends ScrollView {
+public class UpgradeMaxScrollView extends ScrollView {
 
-    public MaxScrollView(Context context) {
+    public UpgradeMaxScrollView(Context context) {
         this(context, null);
     }
 
-    public MaxScrollView(Context context, AttributeSet attrs) {
+    public UpgradeMaxScrollView(Context context, AttributeSet attrs) {
         super(context, attrs, 0);
     }
 
-    public MaxScrollView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public UpgradeMaxScrollView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -43,7 +43,7 @@ public class MaxScrollView extends ScrollView {
     }
 
     private static void log(String msg) {
-        if (BuildInfo.DEBUG_MODE) {
+        if (UpgradeBuildInfo.DEBUG_MODE) {
             Log.d("MaxScrollView", msg);
         }
     }

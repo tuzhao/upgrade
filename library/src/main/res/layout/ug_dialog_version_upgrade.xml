@@ -6,7 +6,7 @@
     android:layout_gravity="center"
     android:layout_marginLeft="40dp"
     android:layout_marginRight="40dp"
-    android:background="@drawable/bg_upgrade_dialog"
+    android:background="@drawable/ug_bg_upgrade_dialog"
     android:minWidth="310dp"
     android:orientation="vertical">
 
@@ -19,7 +19,7 @@
         android:paddingRight="20dp"
         android:paddingBottom="18dp"
         android:tag="beta_title"
-        android:text="@string/upgrade_title"
+        android:text="@string/ug_title"
         android:textColor="#333333"
         android:textSize="16sp"
         android:textStyle="bold" />
@@ -30,7 +30,7 @@
         android:background="#E7EBEE"
         tools:ignore="ContentDescription" />
 
-    <org.tuzhao.upgrade.view.MaxScrollView
+    <org.tuzhao.upgrade.view.UpgradeMaxScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
@@ -50,7 +50,7 @@
             android:textColor="#666666"
             android:textSize="14dp"
             tools:ignore="SpUsage" />
-    </org.tuzhao.upgrade.view.MaxScrollView>
+    </org.tuzhao.upgrade.view.UpgradeMaxScrollView>
 
     <ImageView
         android:layout_width="match_parent"
@@ -69,10 +69,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/public_selector_click_bg"
+            android:background="@drawable/ug_bt_selector"
             android:gravity="center"
             android:tag="beta_cancel_button"
-            android:text="@string/upgrade_cancel"
+            android:text="@string/ug_cancel"
             android:textColor="#666666"
             android:textSize="16sp" />
 
@@ -87,10 +87,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/public_selector_click_bg"
+            android:background="@drawable/ug_bt_selector"
             android:gravity="center"
             android:tag="beta_confirm_button"
-            android:text="@string/upgrade_submit"
+            android:text="@string/ug_submit"
             android:textColor="#1b88ee"
             android:textSize="16sp" />
     </LinearLayout>

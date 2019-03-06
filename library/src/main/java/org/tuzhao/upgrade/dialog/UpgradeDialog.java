@@ -20,12 +20,12 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 
-import org.tuzhao.upgrade.BuildInfo;
+import org.tuzhao.upgrade.UpgradeBuildInfo;
 import org.tuzhao.upgrade.R;
 import org.tuzhao.upgrade.bean.UpgradeInfoBean;
-import org.tuzhao.upgrade.wiget.BaseOnClickListener;
-import org.tuzhao.upgrade.wiget.WeakHandler;
-import org.tuzhao.upgrade.wiget.WeakRunnable;
+import org.tuzhao.upgrade.wiget.UpgradeBaseOnClickListener;
+import org.tuzhao.upgrade.wiget.UpgradeWeakHandler;
+import org.tuzhao.upgrade.wiget.UpgradeWeakRunnable;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,7 +36,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Locale;
+import java.util.WeakHashMap;
 
 /**
  * 显示版本更新的dialog
@@ -49,7 +51,7 @@ public final class UpgradeDialog extends AppCompatDialog {
 
     private UpgradeInfoBean bean;
     private boolean isForce;
-    private static WeakReference<UpgradeDialog> wr;
+    private static WeakHashMap<String, WeakReference<UpgradeDialog>> map = new WeakHashMap<>();
     private static WeakReference<DownloadThread> th;
     private int count;
     private Activity activity;
@@ -79,26 +81,49 @@ public final class UpgradeDialog extends AppCompatDialog {
         /*
          * 清除已有的dialog
          */
-        close();
+        close(context);
         UpgradeDialog dialog = new UpgradeDialog(context, bean, helper);
-        wr = new WeakReference<>(dialog);
         dialog.show();
         return true;
     }
 
     public static void close() {
         try {
+            ArrayList<String> list = new ArrayList<>(map.keySet());
+            for (int i = 0; i < list.size(); i++) {
+                String key = list.get(i);
+                WeakReference<UpgradeDialog> wr = map.get(key);
+                if (null != wr) {
+                    UpgradeDialog temp = wr.get();
+                    if (null != temp && temp.isShowing()) {
+                        temp.dismiss();
+                    }
+                    wr.clear();
+                }
+            }
+            map.clear();
+        } catch (Exception e) {
+            if (UpgradeBuildInfo.DEBUG_MODE) {
+                Log.w(TAG, "close upgrade dialog cause error", e);
+            }
+        }
+    }
+
+    public static void close(Activity activity) {
+        try {
+            if (null == activity) return;
+            String key = activity.getClass().getName();
+            WeakReference<UpgradeDialog> wr = map.get(key);
             if (null != wr) {
                 UpgradeDialog temp = wr.get();
                 if (null != temp && temp.isShowing()) {
                     temp.dismiss();
                 }
                 wr.clear();
-                wr = null;
             }
-            clearThread();
+            map.remove(key);
         } catch (Exception e) {
-            if (BuildInfo.DEBUG_MODE) {
+            if (UpgradeBuildInfo.DEBUG_MODE) {
                 Log.w(TAG, "close upgrade dialog cause error", e);
             }
         }
@@ -116,7 +141,7 @@ public final class UpgradeDialog extends AppCompatDialog {
     }
 
     private UpgradeDialog(@NonNull Activity context, UpgradeInfoBean bean, Helper helper) {
-        this(context, R.style.UpdateDialog);
+        this(context, R.style.UGDialog);
         this.bean = bean;
         this.activity = context;
         this.isForce = bean.isForceUpgrade();
@@ -135,7 +160,7 @@ public final class UpgradeDialog extends AppCompatDialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Context context = getContext();
-        setContentView(R.layout.dialog_version_upgrade);
+        setContentView(R.layout.ug_dialog_version_upgrade);
         count = 0;
         TextView mTitle = findViewById(R.id.dialog_update_title);
         TextView mMessage = findViewById(R.id.dialog_update_message);
@@ -167,7 +192,7 @@ public final class UpgradeDialog extends AppCompatDialog {
                 log("received a back event");
                 count++;
                 if (count == 1) {
-                    showToast(R.string.upgrade_pressed_again_back);
+                    showToast(R.string.ug_pressed_again_back);
                     new Handler().postDelayed(new ResetRunnable(this), 3000);
                 }
                 if (count == 2) {
@@ -181,7 +206,7 @@ public final class UpgradeDialog extends AppCompatDialog {
         return super.onKeyDown(keyCode, event);
     }
 
-    private static class ResetRunnable extends WeakRunnable<UpgradeDialog> {
+    private static class ResetRunnable extends UpgradeWeakRunnable<UpgradeDialog> {
 
         ResetRunnable(UpgradeDialog dialog) {
             super(dialog);
@@ -198,12 +223,12 @@ public final class UpgradeDialog extends AppCompatDialog {
     }
 
     private static void log(String msg) {
-        if (BuildInfo.DEBUG_MODE) {
+        if (UpgradeBuildInfo.DEBUG_MODE) {
             Log.d("UpgradeDialog", msg);
         }
     }
 
-    private class CancelClickListener extends BaseOnClickListener {
+    private class CancelClickListener extends UpgradeBaseOnClickListener {
         @Override
         public void click(View v) {
             log("click cancel");
@@ -219,7 +244,7 @@ public final class UpgradeDialog extends AppCompatDialog {
     private String saveDir;
     private String saveName;
 
-    private class SubmitClickListener extends BaseOnClickListener {
+    private class SubmitClickListener extends UpgradeBaseOnClickListener {
         @Override
         public void click(View v) {
             log("dialog update submit");
@@ -252,7 +277,7 @@ public final class UpgradeDialog extends AppCompatDialog {
                 log("create download dir result: " + mkdirs);
             }
         } catch (Exception e) {
-            if (BuildInfo.DEBUG_MODE) {
+            if (UpgradeBuildInfo.DEBUG_MODE) {
                 Log.w(TAG, "get save path error!", e);
             }
         }
@@ -265,7 +290,7 @@ public final class UpgradeDialog extends AppCompatDialog {
         }
     }
 
-    private static class DownloadHandler extends WeakHandler<UpgradeDialog> {
+    private static class DownloadHandler extends UpgradeWeakHandler<UpgradeDialog> {
 
         static final int DOWNLOAD_START = 0x01;
         static final int DOWNLOAD_ERROR = 0x02;
@@ -304,7 +329,7 @@ public final class UpgradeDialog extends AppCompatDialog {
     private void downloadStart() {
         try {
             if (null != mBtSubmit) {
-                mBtSubmit.setText(R.string.upgrade_download_start);
+                mBtSubmit.setText(R.string.ug_download_start);
                 mBtSubmit.setEnabled(false);
             }
         } catch (Exception e) {
@@ -315,11 +340,11 @@ public final class UpgradeDialog extends AppCompatDialog {
     private void downloadError() {
         try {
             if (null != mBtSubmit) {
-                mBtSubmit.setText(R.string.upgrade_download_start);
+                mBtSubmit.setText(R.string.ug_download_start);
                 mBtSubmit.setEnabled(true);
                 mBtSubmit.setOnClickListener(new SubmitClickListener());
             }
-            showToast(R.string.upgrade_download_failure);
+            showToast(R.string.ug_download_failure);
         } catch (Exception e) {
             //..ignore...
         }
@@ -343,7 +368,7 @@ public final class UpgradeDialog extends AppCompatDialog {
         try {
             File file = new File(saveDir + "/" + saveName);
             if (null != mBtSubmit) {
-                mBtSubmit.setText(R.string.upgrade_download_start);
+                mBtSubmit.setText(R.string.ug_download_start);
                 mBtSubmit.setEnabled(true);
                 mBtSubmit.setOnClickListener(new SubmitClickListener());
             }
@@ -354,7 +379,7 @@ public final class UpgradeDialog extends AppCompatDialog {
                 if (md5Cal.equals(md5Info)) {
                     install(file);
                 } else {
-                    showToast(R.string.upgrade_apk_verify_failure);
+                    showToast(R.string.ug_apk_verify_failure);
                 }
             } else {
                 install(file);
@@ -363,8 +388,8 @@ public final class UpgradeDialog extends AppCompatDialog {
                 dismiss();
             }
         } catch (Exception e) {
-            showToast(R.string.upgrade_apk_install_failure);
-            if (BuildInfo.DEBUG_MODE) {
+            showToast(R.string.ug_apk_install_failure);
+            if (UpgradeBuildInfo.DEBUG_MODE) {
                 Log.w("install apk error", e);
             }
         }
@@ -439,7 +464,7 @@ public final class UpgradeDialog extends AppCompatDialog {
         }
 
         private static void log(String msg) {
-            if (BuildInfo.DEBUG_MODE) {
+            if (UpgradeBuildInfo.DEBUG_MODE) {
                 Log.d("DownloadThread", msg);
             }
         }
@@ -561,7 +586,7 @@ public final class UpgradeDialog extends AppCompatDialog {
                     //...ignore
                 }
             } catch (Exception e) {
-                if (BuildInfo.DEBUG_MODE) {
+                if (UpgradeBuildInfo.DEBUG_MODE) {
                     Log.w(TAG, "download thread run error.", e);
                 }
                 handler.sendEmptyMessage(DownloadHandler.DOWNLOAD_ERROR);

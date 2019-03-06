@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="UpdateDialog" parent="android:style/Theme.Dialog">
+    <style name="UGDialog" parent="android:style/Theme.Dialog">
         <item name="android:backgroundDimAmount">0.4</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowNoTitle">true</item>

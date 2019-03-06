@@ -10,16 +10,16 @@ import java.lang.ref.WeakReference;
  * <p>
  * Created by tuzhao on 2018/03/22.
  */
-public abstract class WeakHandler<T> extends android.os.Handler {
+public abstract class UpgradeWeakHandler<T> extends android.os.Handler {
 
     private final WeakReference<T> w;
 
-    public WeakHandler(T t) {
+    public UpgradeWeakHandler(T t) {
         super();
         this.w = new WeakReference<T>(t);
     }
 
-    public WeakHandler(T t, Looper looper) {
+    public UpgradeWeakHandler(T t, Looper looper) {
         super(looper);
         this.w = new WeakReference<T>(t);
     }

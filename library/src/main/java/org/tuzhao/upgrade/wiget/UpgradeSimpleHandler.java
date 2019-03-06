@@ -7,13 +7,13 @@ import android.os.Message;
 /**
  * @author tuzhao
  */
-public final class SimpleHandler extends WeakHandler<Activity> {
+public final class UpgradeSimpleHandler extends UpgradeWeakHandler<Activity> {
 
-    public SimpleHandler(Activity activity) {
+    public UpgradeSimpleHandler(Activity activity) {
         super(activity);
     }
 
-    public SimpleHandler(Activity activity, Looper looper) {
+    public UpgradeSimpleHandler(Activity activity, Looper looper) {
         super(activity, looper);
     }
 

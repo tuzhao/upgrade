@@ -7,7 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import org.tuzhao.upgrade.BuildInfo;
+import org.tuzhao.upgrade.UpgradeBuildInfo;
 import org.tuzhao.upgrade.bean.UpgradeInfoBean;
 import org.tuzhao.upgrade.dialog.UpgradeDialog;
 
@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void checkUpdate(View view) {
-        BuildInfo.setDebugMode(true);
+        UpgradeBuildInfo.setDebugMode(true);
 
         UpgradeInfoBean info = new UpgradeInfoBean() {
 

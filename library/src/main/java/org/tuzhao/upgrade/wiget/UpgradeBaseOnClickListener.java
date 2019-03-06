@@ -5,15 +5,15 @@ import android.view.View;
 /**
  * 解决普通快速的点击 出现两次弹框的问题
  */
-public abstract class BaseOnClickListener implements View.OnClickListener {
+public abstract class UpgradeBaseOnClickListener implements View.OnClickListener {
     private long lastTimeMillis;
     private long MIN_CLICK_INTERVAL = 1000;
 
-    public BaseOnClickListener() {
+    public UpgradeBaseOnClickListener() {
 
     }
 
-    public BaseOnClickListener(long interval) {
+    public UpgradeBaseOnClickListener(long interval) {
         MIN_CLICK_INTERVAL = interval;
     }
 

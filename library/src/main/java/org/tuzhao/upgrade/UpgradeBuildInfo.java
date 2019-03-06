@@ -1,6 +1,6 @@
 package org.tuzhao.upgrade;
 
-public final class BuildInfo {
+public final class UpgradeBuildInfo {
 
     public static boolean DEBUG_MODE = false;
 

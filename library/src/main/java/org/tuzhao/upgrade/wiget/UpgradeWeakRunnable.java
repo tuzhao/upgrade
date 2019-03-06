@@ -7,11 +7,11 @@ import java.lang.ref.WeakReference;
  * <p>
  * Created by tuzhao on 2018/03/22.
  */
-public abstract class WeakRunnable<T> implements Runnable {
+public abstract class UpgradeWeakRunnable<T> implements Runnable {
 
     private final WeakReference<T> wr;
 
-    public WeakRunnable(T t) {
+    public UpgradeWeakRunnable(T t) {
         wr = new WeakReference<>(t);
     }
 
