@@ -14,15 +14,16 @@
         android:id="@+id/dialog_update_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="20dp"
-        android:paddingTop="18dp"
-        android:paddingRight="20dp"
-        android:paddingBottom="18dp"
+        android:paddingLeft="14dp"
+        android:paddingTop="14dp"
+        android:paddingRight="14dp"
+        android:paddingBottom="14dp"
         android:tag="beta_title"
         android:text="@string/ug_title"
         android:textColor="#333333"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textSize="15dp"
+        android:textStyle="bold"
+        tools:ignore="SpUsage" />
 
     <ImageView
         android:layout_width="match_parent"
@@ -42,13 +43,13 @@
             android:layout_height="wrap_content"
             android:lineSpacingExtra="3dp"
             android:minHeight="120dp"
-            android:paddingLeft="20dp"
-            android:paddingTop="20dp"
-            android:paddingRight="20dp"
-            android:paddingBottom="20dp"
+            android:paddingLeft="14dp"
+            android:paddingTop="16dp"
+            android:paddingRight="14dp"
+            android:paddingBottom="16dp"
             android:text=""
             android:textColor="#666666"
-            android:textSize="14dp"
+            android:textSize="13dp"
             tools:ignore="SpUsage" />
     </org.tuzhao.upgrade.view.UpgradeMaxScrollView>
 
@@ -74,7 +75,8 @@
             android:tag="beta_cancel_button"
             android:text="@string/ug_cancel"
             android:textColor="#666666"
-            android:textSize="16sp" />
+            android:textSize="14dp"
+            tools:ignore="SpUsage" />
 
         <ImageView
             android:layout_width="1px"
@@ -92,6 +94,7 @@
             android:tag="beta_confirm_button"
             android:text="@string/ug_submit"
             android:textColor="#1b88ee"
-            android:textSize="16sp" />
+            android:textSize="14dp"
+            tools:ignore="SpUsage" />
     </LinearLayout>
 </LinearLayout>
