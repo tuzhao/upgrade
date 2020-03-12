@@ -80,6 +80,16 @@ public class MainActivity extends AppCompatActivity {
             public void exitApp() {
 
             }
+
+            @Override
+            public boolean onCancelClick(UpgradeDialog dialog) {
+                return false;
+            }
+
+            @Override
+            public boolean onSubmitClick(UpgradeDialog dialog) {
+                return false;
+            }
         };
 
         boolean show = UpgradeDialog.show(this, info, helper);

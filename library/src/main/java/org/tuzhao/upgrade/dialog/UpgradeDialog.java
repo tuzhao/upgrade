@@ -20,8 +20,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 
-import org.tuzhao.upgrade.UpgradeBuildInfo;
 import org.tuzhao.upgrade.R;
+import org.tuzhao.upgrade.UpgradeBuildInfo;
 import org.tuzhao.upgrade.bean.UpgradeInfoBean;
 import org.tuzhao.upgrade.wiget.UpgradeBaseOnClickListener;
 import org.tuzhao.upgrade.wiget.UpgradeWeakHandler;
@@ -232,11 +232,23 @@ public final class UpgradeDialog extends AppCompatDialog {
         @Override
         public void click(View v) {
             log("click cancel");
-            try {
-                dismiss();
-            } catch (Exception e) {
-                //...ignore...
+            if (null != helper) {
+                if (helper.onCancelClick(UpgradeDialog.this)) {
+                    log("cancel click consumed by son class.");
+                } else {
+                    dealCancel();
+                }
+            } else {
+                dealCancel();
             }
+        }
+    }
+
+    private void dealCancel() {
+        try {
+            dismiss();
+        } catch (Exception e) {
+            //...ignore...
         }
     }
 
@@ -244,21 +256,33 @@ public final class UpgradeDialog extends AppCompatDialog {
     private String saveDir;
     private String saveName;
 
+    private void dealSubmit() {
+        mBtCancel.setVisibility(View.GONE);
+        mBtSubmit.setOnClickListener(null);
+        if (null == handler) {
+            handler = new DownloadHandler(UpgradeDialog.this, activity.getMainLooper());
+        }
+        saveDir = getUseAppPath(getContext().getApplicationContext());
+        saveName = "upgrade_" + bean.getUpgradeVersionName() + "_" + (System.currentTimeMillis() / 1000) + ".apk";
+        String url = bean.getUpgradeDownloadUrl();
+        DownloadThread thread = new DownloadThread(handler, url, saveDir, saveName, bean.getUpgradeFileSize());
+        th = new WeakReference<>(thread);
+        thread.start();
+    }
+
     private class SubmitClickListener extends UpgradeBaseOnClickListener {
         @Override
         public void click(View v) {
             log("dialog update submit");
-            mBtCancel.setVisibility(View.GONE);
-            mBtSubmit.setOnClickListener(null);
-            if (null == handler) {
-                handler = new DownloadHandler(UpgradeDialog.this, activity.getMainLooper());
+            if (null != helper) {
+                if (helper.onSubmitClick(UpgradeDialog.this)) {
+                    log("submit click consumed by son class.");
+                } else {
+                    dealSubmit();
+                }
+            } else {
+                dealSubmit();
             }
-            saveDir = getUseAppPath(getContext().getApplicationContext());
-            saveName = "upgrade_" + bean.getUpgradeVersionName() + "_" + (System.currentTimeMillis() / 1000) + ".apk";
-            String url = bean.getUpgradeDownloadUrl();
-            DownloadThread thread = new DownloadThread(handler, url, saveDir, saveName, bean.getUpgradeFileSize());
-            th = new WeakReference<>(thread);
-            thread.start();
         }
     }
 
@@ -638,6 +662,22 @@ public final class UpgradeDialog extends AppCompatDialog {
         void showToast(int resId);
 
         void exitApp();
+
+        /**
+         * 取消按键事件
+         *
+         * @param dialog UpgradeDialog
+         * @return true代表由子类消费此次点击事件
+         */
+        boolean onCancelClick(UpgradeDialog dialog);
+
+        /**
+         * 立即更新按键事件
+         *
+         * @param dialog UpgradeDialog
+         * @return true代表由子类消费此次点击事件
+         */
+        boolean onSubmitClick(UpgradeDialog dialog);
     }
 
 }
