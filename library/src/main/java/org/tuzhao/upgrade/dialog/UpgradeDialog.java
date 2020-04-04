@@ -87,6 +87,8 @@ public final class UpgradeDialog extends AppCompatDialog {
         close(context);
         UpgradeDialog dialog = new UpgradeDialog(context, bean, helper);
         dialog.show();
+        String key = context.getClass().getName();
+        map.put(key, new WeakReference<>(dialog));
         return true;
     }
 
