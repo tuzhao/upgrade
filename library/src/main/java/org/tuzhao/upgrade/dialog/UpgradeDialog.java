@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,6 +39,7 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.WeakHashMap;
 
@@ -84,6 +87,8 @@ public final class UpgradeDialog extends AppCompatDialog {
         close(context);
         UpgradeDialog dialog = new UpgradeDialog(context, bean, helper);
         dialog.show();
+        String key = context.getClass().getName();
+        map.put(key, new WeakReference<>(dialog));
         return true;
     }
 
@@ -442,6 +447,18 @@ public final class UpgradeDialog extends AppCompatDialog {
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 intent.setDataAndType(uri, "application/vnd.android.package-archive");
+
+                try {
+                    List<ResolveInfo> resInfoList = activity.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+                    for (ResolveInfo resolveInfo : resInfoList) {
+                        String packageName = resolveInfo.activityInfo.packageName;
+                        log("response install pkg: " + packageName);
+                        activity.grantUriPermission(packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    }
+                } catch (Exception e) {
+                    Log.w(TAG, "set install uri permission error", e);
+                }
+
                 getContext().startActivity(intent);
             } else {
                 Intent install = new Intent(Intent.ACTION_VIEW);
